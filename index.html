@@ -92,7 +92,7 @@
                         <option value="15000000">15.000.000</option>
                         <option value="15500000">15.500.000</option>
                         <option value="16000000">16.000.000</option>
-                        </select>
+                    </select>
                 </div>
 
                 <div>
@@ -100,7 +100,7 @@
                         <i class="fas fa-bed mr-2 text-red-500"></i>Số ngày nghỉ
                     </label>
                     <select id="soNgayNghi" class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg border">
-                         <option value="0">0</option>
+                        <option value="0">0</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -119,7 +119,7 @@
                         <i class="fas fa-clock mr-2 text-yellow-500"></i>Số giờ nghỉ
                     </label>
                     <select id="soGioNghi" class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg border">
-                         <option value="0">0</option>
+                        <option value="0">0</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -136,7 +136,8 @@
                         <i class="fas fa-business-time mr-2 text-green-500"></i>Số giờ tăng ca
                     </label>
                     <input type="number" id="gioTangCa" placeholder="Nhập số giờ làm thêm" value="0"
-                           inputmode="numeric" class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                           inputmode="numeric"
+                           onfocus="clearIfZero(this)" onblur="setDefaultIfEmpty(this)" class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                 </div>
 
                 <div>
@@ -144,7 +145,8 @@
                         <i class="fas fa-hand-holding-usd mr-2 text-purple-500"></i>Tiền tạm ứng (x1000 VNĐ)
                     </label>
                     <input type="number" id="tamUng" placeholder="Nhập số tiền (vd: 500 cho 500.000)" value="0"
-                           inputmode="numeric" class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                           inputmode="numeric"
+                           onfocus="clearIfZero(this)" onblur="setDefaultIfEmpty(this)" class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                      <p class="mt-1 text-xs text-gray-500">Nhập số tiền theo đơn vị nghìn đồng (ví dụ: nhập 500 nghĩa là 500.000 VNĐ).</p>
                 </div>
 
@@ -153,7 +155,8 @@
                         <i class="fas fa-gift mr-2 text-pink-500"></i>Tiền thưởng (x1000 VNĐ)
                     </label>
                     <input type="number" id="tienThuong" placeholder="Nhập số tiền (vd: 100 cho 100.000)" value="0"
-                           inputmode="numeric" class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                           inputmode="numeric"
+                           onfocus="clearIfZero(this)" onblur="setDefaultIfEmpty(this)" class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                      <p class="mt-1 text-xs text-gray-500">Nhập số tiền theo đơn vị nghìn đồng (ví dụ: nhập 100 nghĩa là 100.000 VNĐ).</p>
                 </div>
 
@@ -222,8 +225,7 @@
                         <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg bg-red-50 text-red-700">
                             <span class="text-red-600">Tiền tạm ứng:</span> <span class="font-medium"><span id="tamUngDisplay">---</span> VNĐ</span>
                         </div>
-                        </div>
-
+                    </div>
                     <div class="final-salary flex justify-between items-center px-4 py-3 rounded-lg mt-4">
                         <span class="font-bold text-gray-800">LƯƠNG THỰC NHẬN:</span>
                         <span class="text-xl font-bold text-blue-600"><span id="luongThucNhan">---</span> VNĐ</span>
@@ -241,20 +243,16 @@
         // Hàm tính ngày công chuẩn của tháng trước (Thứ 2 - Thứ 7)
         function tinhNgayCongChuanThangTruoc() {
             const homNay = new Date();
-            // Lấy ngày đầu tiên của tháng trước
             const ngayDauThangTruoc = new Date(homNay.getFullYear(), homNay.getMonth() - 1, 1);
             namTinhLuong = ngayDauThangTruoc.getFullYear();
-            thangTinhLuong = ngayDauThangTruoc.getMonth() + 1; // Tháng bắt đầu từ 0
-            // Lấy ngày cuối cùng của tháng trước
+            thangTinhLuong = ngayDauThangTruoc.getMonth() + 1;
             const ngayCuoiThangTruoc = new Date(namTinhLuong, thangTinhLuong, 0);
             const soNgayTrongThang = ngayCuoiThangTruoc.getDate();
 
             let soNgayCongChuan = 0;
-            // Duyệt qua từng ngày trong tháng trước
             for (let ngay = 1; ngay <= soNgayTrongThang; ngay++) {
                 const ngayKiemTra = new Date(namTinhLuong, thangTinhLuong - 1, ngay);
-                const thuTrongTuan = ngayKiemTra.getDay(); // 0 = Chủ Nhật, 1 = Thứ 2, ..., 6 = Thứ 7
-                // Chỉ tính ngày công nếu là từ Thứ 2 đến Thứ 7
+                const thuTrongTuan = ngayKiemTra.getDay();
                 if (thuTrongTuan >= 1 && thuTrongTuan <= 6) {
                     soNgayCongChuan++;
                 }
@@ -265,14 +263,12 @@
         // Hàm định dạng tiền tệ VNĐ
         function formatCurrency(number) {
             if (isNaN(number) || number === null) return '---';
-            // Làm tròn đến hàng đơn vị trước khi định dạng
             return new Intl.NumberFormat('vi-VN').format(Math.round(number));
         }
 
         // Hàm làm tròn LÊN đến hàng nghìn gần nhất
         function roundUpToThousand(number) {
              if (isNaN(number) || number === null) return 0;
-             // Sử dụng Math.ceil để làm tròn lên
              return Math.ceil(number / 1000) * 1000;
         }
 
@@ -281,9 +277,34 @@
             ngayCongChuanThangTruoc = tinhNgayCongChuanThangTruoc();
             document.getElementById('kyTinhLuong').textContent = `${thangTinhLuong}/${namTinhLuong}`;
             document.getElementById('ngayCongChuan').textContent = ngayCongChuanThangTruoc;
-            // Đặt lại kết quả khi tải trang
-            resetResults();
+            resetResults(); // Chỉ reset kết quả khi tải trang
         };
+
+        // Hàm reset các ô nhập liệu về giá trị mặc định
+        function resetInputs() {
+            document.getElementById('luongCoBan').selectedIndex = 0;
+            document.getElementById('soNgayNghi').selectedIndex = 0;
+            document.getElementById('soGioNghi').selectedIndex = 0;
+            // Đặt lại giá trị về '0' cho các input số
+            document.getElementById('gioTangCa').value = '0';
+            document.getElementById('tamUng').value = '0';
+            document.getElementById('tienThuong').value = '0';
+        }
+
+        // *** HÀM MỚI: Xóa số 0 khi focus vào input ***
+        function clearIfZero(element) {
+            if (element.value === '0') {
+                element.value = '';
+            }
+        }
+
+        // *** HÀM MỚI: Đặt lại số 0 nếu input rỗng khi mất focus ***
+        function setDefaultIfEmpty(element) {
+            if (element.value === '') {
+                element.value = '0';
+            }
+        }
+        // ***********************************************
 
         // Hàm tính lương chính
         function tinhLuong() {
@@ -291,18 +312,16 @@
             const luongCoBan = parseFloat(document.getElementById('luongCoBan').value) || 0;
             const soNgayNghi = parseFloat(document.getElementById('soNgayNghi').value) || 0;
             const gioTangCa = parseFloat(document.getElementById('gioTangCa').value) || 0;
-            // Nhân giá trị tạm ứng và tiền thưởng với 1000
             const tamUngInput = parseFloat(document.getElementById('tamUng').value) || 0;
             const tienThuongInput = parseFloat(document.getElementById('tienThuong').value) || 0;
             const tamUng = tamUngInput * 1000;
             const tienThuong = tienThuongInput * 1000;
             const soGioNghi = parseFloat(document.getElementById('soGioNghi').value) || 0;
 
-
             // Kiểm tra đầu vào cơ bản
             if (luongCoBan <= 0) {
                 alert("Vui lòng chọn hoặc nhập Lương cơ bản hợp lệ.");
-                resetResults(); // Đặt lại kết quả nếu có lỗi
+                resetResults();
                 return;
             }
             if (ngayCongChuanThangTruoc <= 0) {
@@ -310,13 +329,11 @@
                 resetResults();
                 return;
             }
-            // Kiểm tra giá trị âm (ngoại trừ trường hợp có thể có thưởng/phạt âm)
             if (soNgayNghi < 0 || gioTangCa < 0 || tamUngInput < 0 || soGioNghi < 0 || tienThuongInput < 0) {
                 alert("Các giá trị số ngày nghỉ, giờ tăng ca, tạm ứng, giờ nghỉ, tiền thưởng không được là số âm.");
                 resetResults();
                 return;
             }
-            // Kiểm tra số ngày nghỉ không vượt quá ngày công chuẩn
             if (soNgayNghi > ngayCongChuanThangTruoc) {
                 alert(`Số ngày nghỉ (${soNgayNghi}) không thể lớn hơn số ngày công chuẩn (${ngayCongChuanThangTruoc}) của tháng.`);
                 resetResults();
@@ -324,55 +341,34 @@
             }
 
             // --- Tính toán chi tiết ---
-            // Ngày công thực tế = Ngày công chuẩn - Số ngày nghỉ
             const ngayCongThucTe = ngayCongChuanThangTruoc - soNgayNghi;
-
-            // Lương 1 ngày công = Lương cơ bản / Ngày công chuẩn
             const luongNgayCong = luongCoBan / ngayCongChuanThangTruoc;
-
-            // Lương 1 giờ làm việc bình thường (giả sử 1 ngày làm 9 tiếng)
             const luongGioBT = luongNgayCong / 9;
-
-            // Lương 1 giờ tăng ca (bằng 1.5 lần lương giờ bình thường)
             const luongGioTC = luongGioBT * 1.5;
-
-            // Tiền bị trừ cho 1 giờ nghỉ (bằng 1 lần lương giờ bình thường)
-            const luongGioNghi = luongGioBT * 1; // Thường là bằng lương giờ BT
-
-            // Tổng lương theo ngày công thực tế
+            const luongGioNghi = luongGioBT * 1;
             const tongLuongTheoCong = luongNgayCong * ngayCongThucTe;
-
-            // Tổng tiền lương tăng ca
             const tongTienTangCa = gioTangCa * luongGioTC;
-
-            // Tổng tiền bị trừ do nghỉ theo giờ
             const tongTienNghi = soGioNghi * luongGioNghi;
-
-            // Tổng thu nhập = Lương theo công + Tiền tăng ca + Tiền thưởng - Tiền trừ giờ nghỉ
-            // Lưu ý: Trừ tiền nghỉ giờ ở đây thay vì ở cuối
             const tongThuNhap = tongLuongTheoCong + tongTienTangCa + tienThuong - tongTienNghi;
-
-            // Lương thực nhận = Tổng thu nhập - Tiền tạm ứng
             const luongThucNhanChuaLamTron = tongThuNhap - tamUng;
-
-            // Làm tròn LÊN lương thực nhận đến hàng nghìn gần nhất
             const luongThucNhan = roundUpToThousand(luongThucNhanChuaLamTron);
 
             // --- Hiển thị kết quả ---
-            document.getElementById('ngayCongThucTeDisplay').textContent = ngayCongThucTe.toFixed(1); // Có thể có nửa ngày
+            document.getElementById('ngayCongThucTeDisplay').textContent = ngayCongThucTe.toFixed(1);
             document.getElementById('luongNgayCong').textContent = formatCurrency(luongNgayCong);
             document.getElementById('luongGioBT').textContent = formatCurrency(luongGioBT);
             document.getElementById('luongGioTC').textContent = formatCurrency(luongGioTC);
-            document.getElementById('luongGioNghi').textContent = formatCurrency(luongGioNghi); // Hiển thị tiền trừ 1h nghỉ
+            document.getElementById('luongGioNghi').textContent = formatCurrency(luongGioNghi);
             document.getElementById('tongLuongTheoCong').textContent = formatCurrency(tongLuongTheoCong);
             document.getElementById('tongTienTangCa').textContent = formatCurrency(tongTienTangCa);
-            document.getElementById('tongTienNghi').textContent = formatCurrency(tongTienNghi); // Hiển thị tổng tiền trừ giờ nghỉ
-            document.getElementById('tienThuongDisplay').textContent = formatCurrency(tienThuong); // Hiển thị tiền thưởng
-            document.getElementById('tongThuNhap').textContent = formatCurrency(tongThuNhap); // Tổng thu nhập trước ứng
-            // *** CẬP NHẬT HIỂN THỊ TIỀN TẠM ỨNG ***
-            document.getElementById('tamUngDisplay').textContent = formatCurrency(tamUng); // Hiển thị tiền tạm ứng đã trừ
-            // *************************************
-            document.getElementById('luongThucNhan').textContent = formatCurrency(luongThucNhan); // Lương cuối cùng
+            document.getElementById('tongTienNghi').textContent = formatCurrency(tongTienNghi);
+            document.getElementById('tienThuongDisplay').textContent = formatCurrency(tienThuong);
+            document.getElementById('tongThuNhap').textContent = formatCurrency(tongThuNhap);
+            document.getElementById('tamUngDisplay').textContent = formatCurrency(tamUng);
+            document.getElementById('luongThucNhan').textContent = formatCurrency(luongThucNhan);
+
+            // Gọi hàm reset input sau khi hiển thị kết quả
+            resetInputs();
         }
 
         // Hàm đặt lại tất cả các ô kết quả về '---'
@@ -387,9 +383,7 @@
             document.getElementById('tongTienNghi').textContent = '---';
             document.getElementById('tienThuongDisplay').textContent = '---';
             document.getElementById('tongThuNhap').textContent = '---';
-            // *** RESET HIỂN THỊ TIỀN TẠM ỨNG ***
-            document.getElementById('tamUngDisplay').textContent = '---'; // Reset cả tạm ứng
-            // **********************************
+            document.getElementById('tamUngDisplay').textContent = '---';
             document.getElementById('luongThucNhan').textContent = '---';
         }
     </script>
