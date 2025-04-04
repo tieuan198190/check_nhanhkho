@@ -90,9 +90,9 @@
                         <option value="14000000">14.000.000</option>
                         <option value="14500000">14.500.000</option>
                         <option value="15000000">15.000.000</option>
-                        <option value="15000000">15.500.000</option>
-                        <option value="15000000">16.000.000</option>
-                    </select>
+                        <option value="15500000">15.500.000</option>
+                        <option value="16000000">16.000.000</option>
+                        </select>
                 </div>
 
                 <div>
@@ -222,7 +222,7 @@
                         <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg bg-red-50 text-red-700">
                             <span class="text-red-600">Tiền tạm ứng:</span> <span class="font-medium"><span id="tamUngDisplay">---</span> VNĐ</span>
                         </div>
-                    </div>
+                        </div>
 
                     <div class="final-salary flex justify-between items-center px-4 py-3 rounded-lg mt-4">
                         <span class="font-bold text-gray-800">LƯƠNG THỰC NHẬN:</span>
@@ -369,7 +369,9 @@
             document.getElementById('tongTienNghi').textContent = formatCurrency(tongTienNghi); // Hiển thị tổng tiền trừ giờ nghỉ
             document.getElementById('tienThuongDisplay').textContent = formatCurrency(tienThuong); // Hiển thị tiền thưởng
             document.getElementById('tongThuNhap').textContent = formatCurrency(tongThuNhap); // Tổng thu nhập trước ứng
+            // *** CẬP NHẬT HIỂN THỊ TIỀN TẠM ỨNG ***
             document.getElementById('tamUngDisplay').textContent = formatCurrency(tamUng); // Hiển thị tiền tạm ứng đã trừ
+            // *************************************
             document.getElementById('luongThucNhan').textContent = formatCurrency(luongThucNhan); // Lương cuối cùng
         }
 
@@ -385,7 +387,9 @@
             document.getElementById('tongTienNghi').textContent = '---';
             document.getElementById('tienThuongDisplay').textContent = '---';
             document.getElementById('tongThuNhap').textContent = '---';
+            // *** RESET HIỂN THỊ TIỀN TẠM ỨNG ***
             document.getElementById('tamUngDisplay').textContent = '---'; // Reset cả tạm ứng
+            // **********************************
             document.getElementById('luongThucNhan').textContent = '---';
         }
     </script>
