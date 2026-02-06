@@ -8,6 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --touch-target-size: 48px;
+        }
+        html {
+            -webkit-text-size-adjust: 100%;
+        }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc; /* bg-slate-50 */
@@ -30,6 +36,12 @@
             /* Custom focus ring matching Tailwind's blue */
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* focus:ring-blue-500 focus:ring-opacity-30 */
             border-color: #3b82f6; /* focus:border-blue-500 */
+        }
+        .salary-card input,
+        .salary-card select,
+        .salary-card button {
+            min-height: var(--touch-target-size);
+            font-size: 16px;
         }
         .info-badge {
             background-color: #eff6ff; /* bg-blue-50 */
@@ -71,12 +83,210 @@
             right: 0.5rem;
             color: #991b1b; /* text-red-800 */
         }
+        .summary-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 60;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.45);
+        }
+        .summary-modal-content {
+            width: 100%;
+            max-width: 520px;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+            overflow: hidden;
+        }
+        .summary-modal-body {
+            padding: 0.6rem 0.85rem 0.25rem;
+        }
+        .summary-item {
+            border-bottom: 1px solid #eef2f7;
+            padding: 0.4rem 0;
+        }
+        .summary-item-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+        .summary-item-label {
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: #334155;
+        }
+        .summary-item-value {
+            font-size: 0.98rem;
+            font-weight: 800;
+            color: #0f172a;
+            white-space: nowrap;
+            text-align: right;
+        }
+        .summary-item-value-main {
+            font-size: 1.08rem;
+            color: #1d4ed8;
+        }
+        .summary-item-value-minus {
+            color: #b91c1c;
+        }
+        .summary-item-sub {
+            margin-top: 0.15rem;
+            font-size: 0.72rem;
+            color: #64748b;
+            line-height: 1.3;
+        }
+        .summary-final {
+            margin: 0.45rem 0.1rem 0.2rem;
+            border-radius: 10px;
+            background: #eff6ff;
+            padding: 0.5rem 0.6rem;
+            border: 1px solid #bfdbfe;
+        }
+        .mobile-action-bar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 0.75rem 0.75rem calc(0.75rem + env(safe-area-inset-bottom));
+            background: linear-gradient(180deg, rgba(248, 250, 252, 0.2) 0%, rgba(248, 250, 252, 0.95) 18%, rgba(248, 250, 252, 1) 100%);
+            backdrop-filter: blur(6px);
+            z-index: 40;
+        }
+        .mobile-action-button {
+            width: 100%;
+            min-height: 52px;
+            border-radius: 12px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        @media (max-width: 767px) {
+            .salary-card {
+                border-radius: 14px;
+            }
+            .result-item {
+                padding-top: 0.7rem;
+                padding-bottom: 0.7rem;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.35rem;
+            }
+            .result-item > span:last-child {
+                align-self: flex-end;
+                text-align: right;
+                white-space: nowrap;
+            }
+            #ketqua {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .final-salary {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+            .final-salary > span:last-child {
+                align-self: flex-end;
+                text-align: right;
+                white-space: nowrap;
+            }
+            .summary-item-label {
+                font-size: 0.82rem;
+            }
+            .summary-item-value {
+                font-size: 0.93rem;
+            }
+            .summary-item-value-main {
+                font-size: 1.02rem;
+            }
+            .summary-item-sub {
+                font-size: 0.68rem;
+            }
+        }
+        @media (min-width: 768px) {
+            .mobile-action-bar {
+                display: none;
+            }
+        }
     </style>
 </head>
-<body class="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+<body class="min-h-screen py-4 sm:py-8 px-3 sm:px-6 lg:px-8 pb-28 md:pb-8">
     <div id="customAlert" class="custom-alert">
         <span id="customAlertMessage"></span>
         <button onclick="closeCustomAlert()">&times;</button>
+    </div>
+        <div id="summaryModal" class="summary-modal" onclick="closeSummaryPopup(event)">
+        <div class="summary-modal-content" onclick="event.stopPropagation()">
+            <div class="bg-blue-600 text-white px-4 py-3 flex items-center justify-between">
+                <h3 class="font-bold text-base"><i class="fas fa-file-invoice mr-2"></i>Tóm tắt lương</h3>
+                <button onclick="closeSummaryPopup()" class="text-white text-xl leading-none">&times;</button>
+            </div>
+            <div class="summary-modal-body">
+                <div class="summary-item">
+                    <div class="summary-item-head">
+                        <span class="summary-item-label">Tháng 1 sau trừ</span>
+                        <span id="summaryLuongThang1" class="summary-item-value summary-item-value-main">---</span>
+                    </div>
+                    <div id="summaryLuongThang1Sub" class="summary-item-sub">---</div>
+                </div>
+
+                <div class="summary-item">
+                    <div class="summary-item-head">
+                        <span class="summary-item-label">Tháng 2 (đến 07/02)</span>
+                        <span id="summaryLuongThang2" class="summary-item-value">---</span>
+                    </div>
+                    <div id="summaryLuongThang2Sub" class="summary-item-sub">---</div>
+                </div>
+
+                <div class="summary-item">
+                    <div class="summary-item-head">
+                        <span class="summary-item-label">Tăng ca</span>
+                        <span id="summaryTangCa" class="summary-item-value">---</span>
+                    </div>
+                    <div id="summaryTangCaSub" class="summary-item-sub">---</div>
+                </div>
+
+                <div class="summary-item">
+                    <div class="summary-item-head">
+                        <span class="summary-item-label">Lương tháng 13</span>
+                        <span id="summaryLuongThang13" class="summary-item-value">---</span>
+                    </div>
+                    <div id="summaryThang13Rule" class="summary-item-sub">---</div>
+                </div>
+
+                <div class="summary-item">
+                    <div class="summary-item-head">
+                        <span class="summary-item-label">Tổng trước ứng</span>
+                        <span id="summaryTongThuNhap" class="summary-item-value">---</span>
+                    </div>
+                    <div id="summaryTongThuNhapSub" class="summary-item-sub">---</div>
+                </div>
+
+                <div class="summary-item">
+                    <div class="summary-item-head">
+                        <span class="summary-item-label">Tạm ứng</span>
+                        <span id="summaryTamUng" class="summary-item-value summary-item-value-minus">---</span>
+                    </div>
+                </div>
+
+                <div class="summary-final">
+                    <div class="summary-item-head">
+                        <span class="summary-item-label">LƯƠNG THỰC NHẬN</span>
+                        <span id="summaryThucNhan" class="summary-item-value summary-item-value-main">---</span>
+                    </div>
+                </div>
+            </div>
+            <div class="px-4 pb-4 pt-2">
+                <button onclick="nguoiSau()" class="w-full min-h-[48px] rounded-lg bg-blue-600 text-white font-semibold active:bg-blue-700">
+                    <i class="fas fa-user-plus mr-2"></i>Người sau
+                </button>
+            </div>
+        </div>
     </div>
 
     <div class="max-w-2xl mx-auto">
@@ -179,7 +389,41 @@
                     <p class="mt-1 text-xs text-gray-500">Nhập số tiền theo đơn vị nghìn đồng (ví dụ: nhập 100 nghĩa là 100.000 VNĐ).</p>
                 </div>
 
-                <button onclick="tinhLuong()" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-6 transition duration-150 ease-in-out">
+                <div class="border-t border-gray-200 pt-4 space-y-4">
+                    <h3 class="text-sm font-bold text-gray-700">
+                        <i class="fas fa-star mr-2 text-amber-500"></i>Cấu hình lương Tết
+                    </h3>
+
+                    <div>
+                        <label for="ngayCongThang2DenMung7" class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-calendar-day mr-2 text-indigo-500"></i>Ngày công tháng 2 (đến 07/02)
+                        </label>
+                        <input type="number" id="ngayCongThang2DenMung7" placeholder="Mặc định đủ công đến 07/02" value="0"
+                               inputmode="numeric" min="0" step="0.5"
+                               onfocus="clearIfZero(this)" onblur="setDefaultIfEmpty(this)" class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+
+                    <div>
+                        <label for="cachTinhLuongThang13" class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-layer-group mr-2 text-emerald-500"></i>Cách tính lương tháng 13
+                        </label>
+                        <select id="cachTinhLuongThang13" class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg border">
+                            <option value="duNam">Option 1 - Đủ năm (đủ 1 tháng lương cơ bản)</option>
+                            <option value="khongDuNam">Option 2 - Không đủ năm (số tháng làm * lương cơ bản / 12)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="soThangLamViecTrongNam" class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-calendar mr-2 text-cyan-500"></i>Số tháng làm việc trong năm (dùng cho Option 2)
+                        </label>
+                        <input type="number" id="soThangLamViecTrongNam" placeholder="Nhập số tháng (0-12)" value="12"
+                               inputmode="numeric" min="0" max="12" step="0.5"
+                               onfocus="clearIfZero(this)" onblur="setDefaultIfEmpty(this)" class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                </div>
+
+                <button onclick="tinhLuong()" class="hidden md:flex w-full justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-6 transition duration-150 ease-in-out">
                     <i class="fas fa-calculator mr-2"></i> TÍNH LƯƠNG
                 </button>
             </div>
@@ -216,19 +460,27 @@
 
                     <div class="border-t border-gray-200 pt-3 mt-3 space-y-3">
                         <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
-                            <span class="text-gray-600">Tổng lương theo ngày công:</span>
+                            <span class="text-gray-600">Lương cơ bản (tháng 1):</span>
                             <span class="font-medium"><span id="tongLuongTheoCong">---</span> VNĐ</span>
+                        </div>
+                        <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
+                            <span class="text-gray-600">Lương tháng 2 (đến 07/02):</span>
+                            <span class="font-medium"><span id="luongThang2DenMung7Display">---</span> VNĐ</span>
+                        </div>
+                        <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
+                            <span class="text-gray-600">Lương tháng 13:</span>
+                            <span class="font-medium text-amber-600"><span id="luongThang13Display">---</span> VNĐ</span>
                         </div>
                         <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
                             <span class="text-gray-600">Tổng tiền tăng ca:</span>
                             <span class="font-medium text-green-600"><span id="tongTienTangCa">---</span> VNĐ</span>
                         </div>
                         <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
-                            <span class="text-gray-600">Tổng tiền trừ giờ nghỉ:</span>
+                            <span class="text-gray-600">Tổng tiền trừ giờ nghỉ (không tính):</span>
                             <span class="font-medium text-red-600">(<span id="tongTienNghi">---</span> VNĐ)</span>
                         </div>
                          <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
-                            <span class="text-gray-600">Tiền thưởng:</span>
+                            <span class="text-gray-600">Tiền thưởng (không tính):</span>
                             <span class="font-medium text-pink-600"><span id="tienThuongDisplay">---</span> VNĐ</span>
                         </div>
                          <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
@@ -249,9 +501,16 @@
             </div>
         </div>
     </div>
+    <div class="mobile-action-bar md:hidden">
+        <button onclick="tinhLuong()" class="mobile-action-button flex items-center justify-center border border-transparent shadow-sm text-white bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <i class="fas fa-calculator mr-2"></i> TÍNH LƯƠNG
+        </button>
+    </div>
 
     <script>
         let ngayCongChuanThangTruoc = 0;
+        let ngayCongChuanThang2 = 0;
+        let ngayCongChuanThang2DenMung7 = 0;
         let thangTinhLuong = '';
         let namTinhLuong = '';
 
@@ -265,6 +524,34 @@
 
         function closeCustomAlert() {
             document.getElementById('customAlert').style.display = 'none';
+        }
+        function showSummaryPopup(summaryData) {
+            document.getElementById('summaryLuongThang1').textContent = `${formatCurrency(summaryData.luongThang1)} VNĐ`;
+            document.getElementById('summaryLuongThang1Sub').textContent = `= ${formatCurrency(summaryData.luongCoBan)} - nghỉ ngày (${summaryData.soNgayNghi} x ${formatCurrency(summaryData.luongNgayCong)}) - nghỉ giờ (${summaryData.soGioNghi} x ${formatCurrency(summaryData.luongGioNghi)})`;
+            document.getElementById('summaryLuongThang2').textContent = `${formatCurrency(summaryData.luongThang2)} VNĐ`;
+            document.getElementById('summaryLuongThang2Sub').textContent = `= ${summaryData.ngayCongThang2} x ${formatCurrency(summaryData.luongNgayThang2)}`;
+            document.getElementById('summaryTangCa').textContent = `${formatCurrency(summaryData.tangCa)} VNĐ`;
+            document.getElementById('summaryTangCaSub').textContent = `= ${summaryData.gioTangCa} x ${formatCurrency(summaryData.luongGioTC)}`;
+            document.getElementById('summaryThang13Rule').textContent = summaryData.thang13Rule;
+            document.getElementById('summaryLuongThang13').textContent = `${formatCurrency(summaryData.luongThang13)} VNĐ`;
+            document.getElementById('summaryTongThuNhap').textContent = `${formatCurrency(summaryData.tongThuNhap)} VNĐ`;
+            document.getElementById('summaryTongThuNhapSub').textContent = `= tháng 1 sau trừ + tháng 2 + tăng ca + tháng 13`;
+            document.getElementById('summaryTamUng').textContent = `(${formatCurrency(summaryData.tamUng)} VNĐ)`;
+            document.getElementById('summaryThucNhan').textContent = `${formatCurrency(summaryData.thucNhan)} VNĐ`;
+            document.getElementById('summaryModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSummaryPopup(event) {
+            if (event && event.target && event.target.id !== 'summaryModal') return;
+            document.getElementById('summaryModal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        function nguoiSau() {
+            closeSummaryPopup();
+            resetInputs();
+            resetResults();
+            const selectLuongCoBan = document.getElementById('luongCoBan');
+            if (selectLuongCoBan) selectLuongCoBan.focus();
         }
         // --- End Custom Alert Functions ---
 
@@ -291,6 +578,37 @@
             return soNgayCongChuan;
         }
 
+        // Hàm tính ngày công chuẩn từ ngày 1 đến ngày 7 của tháng 2 (Thứ 2 - Thứ 7)
+        function tinhNgayCongThang2DenMung7() {
+            const homNay = new Date();
+            const namHienTai = homNay.getFullYear();
+            let soNgayCongChuan = 0;
+            for (let ngay = 1; ngay <= 7; ngay++) {
+                const ngayKiemTra = new Date(namHienTai, 1, ngay); // Tháng 2 => index 1
+                const thuTrongTuan = ngayKiemTra.getDay();
+                if (thuTrongTuan >= 1 && thuTrongTuan <= 6) {
+                    soNgayCongChuan++;
+                }
+            }
+            return soNgayCongChuan;
+        }
+
+        // Hàm tính ngày công chuẩn của cả tháng 2 (Thứ 2 - Thứ 7)
+        function tinhNgayCongChuanThang2() {
+            const homNay = new Date();
+            const namHienTai = homNay.getFullYear();
+            const ngayCuoiThang2 = new Date(namHienTai, 2, 0).getDate();
+            let soNgayCongChuan = 0;
+            for (let ngay = 1; ngay <= ngayCuoiThang2; ngay++) {
+                const ngayKiemTra = new Date(namHienTai, 1, ngay); // Tháng 2 => index 1
+                const thuTrongTuan = ngayKiemTra.getDay();
+                if (thuTrongTuan >= 1 && thuTrongTuan <= 6) {
+                    soNgayCongChuan++;
+                }
+            }
+            return soNgayCongChuan;
+        }
+
         // Hàm định dạng tiền tệ VNĐ
         function formatCurrency(number) {
             if (isNaN(number) || number === null || number === undefined) return '---';
@@ -309,8 +627,11 @@
         // Khởi tạo khi tải trang
         window.onload = function() {
             ngayCongChuanThangTruoc = tinhNgayCongChuanThangTruoc();
+            ngayCongChuanThang2 = tinhNgayCongChuanThang2();
+            ngayCongChuanThang2DenMung7 = tinhNgayCongThang2DenMung7();
             document.getElementById('kyTinhLuong').textContent = `${String(thangTinhLuong).padStart(2, '0')}/${namTinhLuong}`;
-            document.getElementById('ngayCongChuan').textContent = ngayCongChuanThangTruoc;
+            document.getElementById('ngayCongChuan').textContent = `${ngayCongChuanThangTruoc} + T2(1-7): ${ngayCongChuanThang2DenMung7}/${ngayCongChuanThang2}`;
+            document.getElementById('ngayCongThang2DenMung7').value = String(ngayCongChuanThang2DenMung7);
             resetResults(); // Reset kết quả khi tải trang
             // Không reset input khi tải trang để giữ giá trị mặc định
         };
@@ -324,6 +645,9 @@
             document.getElementById('gioTangCa').value = '0';
             document.getElementById('tamUng').value = '0';
             document.getElementById('tienThuong').value = '0';
+            document.getElementById('ngayCongThang2DenMung7').value = String(ngayCongChuanThang2DenMung7);
+            document.getElementById('cachTinhLuongThang13').value = 'duNam';
+            document.getElementById('soThangLamViecTrongNam').value = '12';
         }
 
         // Hàm xóa số 0 khi focus vào input
@@ -356,6 +680,9 @@
             const tamUngInput = parseFloat(document.getElementById('tamUng').value) || 0;
             const tienThuongInput = parseFloat(document.getElementById('tienThuong').value) || 0;
             const soGioNghi = parseFloat(document.getElementById('soGioNghi').value) || 0;
+            const ngayCongThang2DenMung7 = parseFloat(document.getElementById('ngayCongThang2DenMung7').value) || 0;
+            const cachTinhLuongThang13 = document.getElementById('cachTinhLuongThang13').value;
+            const soThangLamViecTrongNam = parseFloat(document.getElementById('soThangLamViecTrongNam').value) || 0;
 
             const tamUng = tamUngInput * 1000; // Chuyển về đơn vị đồng
             const tienThuong = tienThuongInput * 1000; // Chuyển về đơn vị đồng
@@ -366,13 +693,13 @@
                 resetResults();
                 return;
             }
-            if (ngayCongChuanThangTruoc <= 0) {
+            if (ngayCongChuanThangTruoc <= 0 || ngayCongChuanThang2DenMung7 <= 0 || ngayCongChuanThang2 <= 0) {
                 showCustomAlert("Không thể xác định ngày công chuẩn. Vui lòng kiểm tra lại.");
                 resetResults();
                 return;
             }
              // Kiểm tra giá trị âm (đã được xử lý trong onblur, nhưng kiểm tra lại cho chắc)
-            if (soNgayNghi < 0 || gioTangCa < 0 || tamUngInput < 0 || soGioNghi < 0 || tienThuongInput < 0) {
+            if (soNgayNghi < 0 || gioTangCa < 0 || tamUngInput < 0 || soGioNghi < 0 || tienThuongInput < 0 || ngayCongThang2DenMung7 < 0 || soThangLamViecTrongNam < 0) {
                  showCustomAlert("Các giá trị nhập vào không được là số âm.");
                  resetResults();
                  // Đặt lại các giá trị âm về 0 trong giao diện
@@ -381,36 +708,54 @@
                  if (tamUngInput < 0) document.getElementById('tamUng').value = '0';
                  if (soGioNghi < 0) document.getElementById('soGioNghi').value = '0';
                  if (tienThuongInput < 0) document.getElementById('tienThuong').value = '0';
+                 if (ngayCongThang2DenMung7 < 0) document.getElementById('ngayCongThang2DenMung7').value = '0';
+                 if (soThangLamViecTrongNam < 0) document.getElementById('soThangLamViecTrongNam').value = '0';
                  return;
              }
 
-            // Tính tổng số ngày công bị trừ (bao gồm ngày nghỉ nguyên và giờ nghỉ lẻ quy đổi)
-            // Giả sử 1 ngày làm 9 tiếng
-            const ngayCongTuGioNghi = soGioNghi / 9;
-            const tongNgayCongTru = soNgayNghi + ngayCongTuGioNghi;
+            if (ngayCongThang2DenMung7 > ngayCongChuanThang2DenMung7) {
+                showCustomAlert(`Ngày công tháng 2 đến 07/02 (${ngayCongThang2DenMung7}) không thể lớn hơn ngày công chuẩn (${ngayCongChuanThang2DenMung7}).`);
+                resetResults();
+                 return;
+             }
 
+            if (soThangLamViecTrongNam > 12) {
+                showCustomAlert("Số tháng làm việc trong năm không được lớn hơn 12.");
+                resetResults();
+                return;
+            }
+
+            // Ngày nghỉ/giờ nghỉ chỉ áp dụng trừ vào lương cơ bản tháng 1
+            const tongNgayCongTru = soNgayNghi + (soGioNghi / 9);
             if (tongNgayCongTru > ngayCongChuanThangTruoc) {
-                showCustomAlert(`Tổng số ngày công bị trừ (${tongNgayCongTru.toFixed(2)}) không thể lớn hơn số ngày công chuẩn (${ngayCongChuanThangTruoc}) của tháng.`);
+                showCustomAlert(`Tổng nghỉ quy đổi (${tongNgayCongTru.toFixed(2)} ngày) không thể lớn hơn ngày công chuẩn tháng 1 (${ngayCongChuanThangTruoc}).`);
                 resetResults();
                 return;
             }
 
 
             // --- Tính toán chi tiết ---
-            // Ngày công thực tế = Ngày công chuẩn - Số ngày nghỉ nguyên
+            // Trừ nghỉ vào lương cơ bản tháng 1
             const ngayCongThucTe = ngayCongChuanThangTruoc - soNgayNghi;
             const luongNgayCong = luongCoBan / ngayCongChuanThangTruoc;
             const luongGioBT = luongNgayCong / 9; // Lương 1 giờ bình thường
             const luongGioTC = luongGioBT * 1.5; // Lương 1 giờ tăng ca
             const luongGioNghi = luongGioBT; // Tiền trừ cho 1 giờ nghỉ (bằng lương 1 giờ BT)
 
-            // Tính các khoản thu nhập và khấu trừ
-            const tongLuongTheoCong = luongNgayCong * ngayCongThucTe; // Lương dựa trên số ngày đi làm thực tế (đã trừ ngày nghỉ nguyên)
-            const tongTienTangCa = gioTangCa * luongGioTC;
+            // Tính các khoản thu nhập theo công thức chốt
             const tongTienTruGioNghi = soGioNghi * luongGioNghi; // Tổng tiền bị trừ do nghỉ giờ lẻ
+            const tongLuongTheoCong = luongCoBan - (soNgayNghi * luongNgayCong) - tongTienTruGioNghi;
+            const tongTienTangCa = gioTangCa * luongGioTC;
+            const luongNgayCongThang2 = luongCoBan / ngayCongChuanThang2;
+            const luongThang2DenMung7 = luongNgayCongThang2 * ngayCongThang2DenMung7;
 
-            // Tổng thu nhập = Lương theo ngày công + Tiền tăng ca + Tiền thưởng - Tiền trừ giờ nghỉ lẻ
-            const tongThuNhap = tongLuongTheoCong + tongTienTangCa + tienThuong - tongTienTruGioNghi;
+            let luongThang13 = luongCoBan;
+            if (cachTinhLuongThang13 === 'khongDuNam') {
+                luongThang13 = (soThangLamViecTrongNam * luongCoBan) / 12;
+            }
+
+            // Tổng thu nhập = lương cơ bản + lương tháng 2 (đến 07/02) + tăng ca + tháng 13
+            const tongThuNhap = tongLuongTheoCong + luongThang2DenMung7 + tongTienTangCa + luongThang13;
             const luongThucNhanChuaLamTron = tongThuNhap - tamUng;
 
             // Làm tròn lương thực nhận LÊN đến hàng nghìn gần nhất
@@ -423,12 +768,38 @@
             document.getElementById('luongGioTC').textContent = formatCurrency(luongGioTC);
             document.getElementById('luongGioNghi').textContent = formatCurrency(luongGioNghi);
             document.getElementById('tongLuongTheoCong').textContent = formatCurrency(tongLuongTheoCong);
+            document.getElementById('luongThang2DenMung7Display').textContent = formatCurrency(luongThang2DenMung7);
+            document.getElementById('luongThang13Display').textContent = formatCurrency(luongThang13);
             document.getElementById('tongTienTangCa').textContent = formatCurrency(tongTienTangCa);
             document.getElementById('tongTienNghi').textContent = formatCurrency(tongTienTruGioNghi);
             document.getElementById('tienThuongDisplay').textContent = formatCurrency(tienThuong);
             document.getElementById('tongThuNhap').textContent = formatCurrency(tongThuNhap);
             document.getElementById('tamUngDisplay').textContent = formatCurrency(tamUng);
             document.getElementById('luongThucNhan').textContent = formatCurrency(luongThucNhan);
+
+            showSummaryPopup({
+                luongCoBan: luongCoBan,
+                soNgayNghi: soNgayNghi,
+                luongNgayCong: luongNgayCong,
+                tienTruNgayNghi: soNgayNghi * luongNgayCong,
+                soGioNghi: soGioNghi,
+                luongGioNghi: luongGioNghi,
+                tienTruGioNghi: tongTienTruGioNghi,
+                luongThang1: tongLuongTheoCong,
+                luongNgayThang2: luongNgayCongThang2,
+                ngayCongThang2: ngayCongThang2DenMung7,
+                luongThang2: luongThang2DenMung7,
+                gioTangCa: gioTangCa,
+                luongGioTC: luongGioTC,
+                tangCa: tongTienTangCa,
+                thang13Rule: cachTinhLuongThang13 === 'duNam'
+                    ? 'Đủ năm: 1 x lương cơ bản'
+                    : `Không đủ năm: ${soThangLamViecTrongNam} x lương cơ bản / 12`,
+                luongThang13: luongThang13,
+                tongThuNhap: tongThuNhap,
+                tamUng: tamUng,
+                thucNhan: luongThucNhan
+            });
 
             // Gọi hàm reset input sau khi hiển thị kết quả thành công
             resetInputs(); // Đã bỏ comment dòng này
@@ -442,6 +813,8 @@
             document.getElementById('luongGioTC').textContent = '---';
             document.getElementById('luongGioNghi').textContent = '---';
             document.getElementById('tongLuongTheoCong').textContent = '---';
+            document.getElementById('luongThang2DenMung7Display').textContent = '---';
+            document.getElementById('luongThang13Display').textContent = '---';
             document.getElementById('tongTienTangCa').textContent = '---';
             document.getElementById('tongTienNghi').textContent = '---';
             document.getElementById('tienThuongDisplay').textContent = '---';
