@@ -1,454 +1,349 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Máy Tính Lương Nhân Viên Cô Mập Fashion</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* bg-slate-50 */
-        }
-        .salary-card {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border-radius: 12px; /* rounded-xl */
-            overflow: hidden;
-        }
-        .result-item {
-            transition: all 0.2s ease;
-        }
-        .result-item:hover {
-            background-color: #f1f5f9; /* hover:bg-slate-100 */
-        }
-        .final-salary {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); /* Example gradient */
-        }
-        input:focus, select:focus {
-            /* Custom focus ring matching Tailwind's blue */
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* focus:ring-blue-500 focus:ring-opacity-30 */
-            border-color: #3b82f6; /* focus:border-blue-500 */
-        }
-        .info-badge {
-            background-color: #eff6ff; /* bg-blue-50 */
-            color: #1d4ed8; /* text-blue-700 */
-        }
-        /* Ensure number inputs show numeric keypad on mobile */
-        input[type=number] {
-            -moz-appearance: textfield; /* Firefox */
-        }
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=number]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        /* Custom alert box styling */
-        .custom-alert {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #fef2f2; /* bg-red-50 */
-            color: #b91c1c; /* text-red-700 */
-            padding: 1rem; /* p-4 */
-            border-radius: 0.5rem; /* rounded-lg */
-            border: 1px solid #fecaca; /* border-red-300 */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            display: none; /* Hidden by default */
-            max-width: 90%;
-            text-align: center;
-        }
-        .custom-alert button {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            color: #991b1b; /* text-red-800 */
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cô Mập Fashion - Lookbook Bộ Sưu Tập 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior: smooth; }
+    body {
+      background: #FAF7F2;
+      color: #141414;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    .font-serif { font-family: 'Cormorant Garamond', serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: #d4d0c8; }
+  </style>
 </head>
-<body class="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
-    <div id="customAlert" class="custom-alert">
-        <span id="customAlertMessage"></span>
-        <button onclick="closeCustomAlert()">&times;</button>
+<body>
+  <nav class="fixed top-0 left-0 right-0 z-40 px-6 lg:px-12 py-5 flex justify-between items-center bg-[#FAF7F2]/80 backdrop-blur-md border-b border-neutral-900/5">
+    <div class="font-serif text-[22px] tracking-wide">Cô Mập Fashion</div>
+    <div class="hidden md:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em]">
+      <span class="text-neutral-500">Lookbook Bộ Sưu Tập 2026</span>
+      <a href="https://instagram.com" target="_blank" class="hover:opacity-60 transition">Instagram</a>
     </div>
+  </nav>
 
-    <div class="max-w-2xl mx-auto">
-        <div class="salary-card bg-white">
-            <div class="bg-blue-600 px-6 py-4">
-                <h1 class="text-2xl font-bold text-white text-center">
-                    <i class="fas fa-calculator mr-2"></i> Cô Mập Fashion
-                </h1>
-            </div>
-
-            <div class="px-6 py-4 border-b">
-                <div class="info-badge px-4 py-2 rounded-lg flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm font-medium">
-                    <div class="flex items-center">
-                        <i class="fas fa-calendar-alt mr-2"></i>
-                        <span>Kỳ tính lương: <span id="kyTinhLuong" class="font-bold">Đang tải...</span></span>
-                    </div>
-                    <div class="flex items-center">
-                        <i class="fas fa-calendar-check mr-2"></i>
-                        <span>Ngày công chuẩn: <span id="ngayCongChuan" class="font-bold">Đang tải...</span></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="px-6 py-4 space-y-4">
-                <div>
-                    <label for="luongCoBan" class="block text-sm font-medium text-gray-700 mb-1">
-                        <i class="fas fa-money-bill-wave mr-2 text-blue-500"></i>Lương cơ bản (VNĐ)
-                    </label>
-                    <select id="luongCoBan" class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg border">
-                        <option value="6500000">6.500.000</option>
-                        <option value="7000000">7.000.000</option>
-                        <option value="7500000">7.500.000</option>
-                        <option value="8000000">8.000.000</option>
-                        <option value="8500000">8.500.000</option>
-                        <option value="9000000">9.000.000</option>
-                        <option value="9500000">9.500.000</option>
-                        <option value="10000000">10.000.000</option>
-                        <option value="10500000">10.500.000</option>
-                        <option value="11000000">11.000.000</option>
-                        <option value="11500000">11.500.000</option>
-                        <option value="12000000">12.000.000</option>
-                        <option value="12500000">12.500.000</option>
-                        <option value="13000000">13.000.000</option>
-                        <option value="13500000">13.500.000</option>
-                        <option value="14000000">14.000.000</option>
-                        <option value="14500000">14.500.000</option>
-                        <option value="15000000">15.000.000</option>
-                        <option value="15500000">15.500.000</option>
-                        <option value="16000000">16.000.000</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="soNgayNghi" class="block text-sm font-medium text-gray-700 mb-1">
-                        <i class="fas fa-bed mr-2 text-red-500"></i>Số ngày nghỉ
-                    </label>
-                    <input type="number" id="soNgayNghi" placeholder="Nhập số ngày nghỉ" value="0"
-                           inputmode="numeric" min="0" step="0.5"
-                           onfocus="clearIfZero(this)" onblur="setDefaultIfEmpty(this)" class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                     <p class="mt-1 text-xs text-gray-500">Có thể nhập số lẻ (ví dụ: 0.5 cho nửa ngày).</p>
-                </div>
-
-                <div>
-                    <label for="soGioNghi" class="block text-sm font-medium text-gray-700 mb-1">
-                        <i class="fas fa-clock mr-2 text-yellow-500"></i>Số giờ nghỉ (không tính vào ngày nghỉ ở trên)
-                    </label>
-                    <input type="number" id="soGioNghi" placeholder="Nhập số giờ nghỉ lẻ" value="0"
-                           inputmode="numeric" min="0" step="0.5"
-                           onfocus="clearIfZero(this)" onblur="setDefaultIfEmpty(this)" class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                    <p class="mt-1 text-xs text-gray-500">Nhập số giờ nghỉ lẻ trong tháng (ví dụ: đi trễ, về sớm). Có thể nhập số lẻ (vd: 1.5).</p>
-                </div>
-
-                <div>
-                    <label for="gioTangCa" class="block text-sm font-medium text-gray-700 mb-1">
-                        <i class="fas fa-business-time mr-2 text-green-500"></i>Số giờ tăng ca
-                    </label>
-                    <input type="number" id="gioTangCa" placeholder="Nhập số giờ làm thêm" value="0"
-                           inputmode="numeric" min="0" step="0.5"
-                           onfocus="clearIfZero(this)" onblur="setDefaultIfEmpty(this)" class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                     <p class="mt-1 text-xs text-gray-500">Có thể nhập số lẻ (ví dụ: 2.5 giờ).</p>
-                </div>
-
-                <div>
-                    <label for="tamUng" class="block text-sm font-medium text-gray-700 mb-1">
-                        <i class="fas fa-hand-holding-usd mr-2 text-purple-500"></i>Tiền tạm ứng (x1000 VNĐ)
-                    </label>
-                    <input type="number" id="tamUng" placeholder="Nhập số tiền (vd: 500 cho 500.000)" value="0"
-                           inputmode="numeric" min="0"
-                           onfocus="clearIfZero(this)" onblur="setDefaultIfEmpty(this)" class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                     <p class="mt-1 text-xs text-gray-500">Nhập số tiền theo đơn vị nghìn đồng (ví dụ: nhập 500 nghĩa là 500.000 VNĐ).</p>
-                </div>
-
-                <div>
-                    <label for="tienThuong" class="block text-sm font-medium text-gray-700 mb-1">
-                        <i class="fas fa-gift mr-2 text-pink-500"></i>Tiền thưởng (x1000 VNĐ)
-                    </label>
-                    <input type="number" id="tienThuong" placeholder="Nhập số tiền (vd: 100 cho 100.000)" value="0"
-                           inputmode="numeric" min="0"
-                           onfocus="clearIfZero(this)" onblur="setDefaultIfEmpty(this)" class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                    <p class="mt-1 text-xs text-gray-500">Nhập số tiền theo đơn vị nghìn đồng (ví dụ: nhập 100 nghĩa là 100.000 VNĐ).</p>
-                </div>
-
-                <button onclick="tinhLuong()" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mt-6 transition duration-150 ease-in-out">
-                    <i class="fas fa-calculator mr-2"></i> TÍNH LƯƠNG
-                </button>
-            </div>
-
-            <div id="ketqua" class="px-6 py-4 border-t border-gray-200">
-                <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-file-invoice-dollar mr-2 text-blue-500"></i> KẾT QUẢ CHI TIẾT
-                </h2>
-
-                <div class="space-y-3">
-                    <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
-                        <span class="text-gray-600">Ngày công thực tế:</span>
-                        <span class="font-medium"><span id="ngayCongThucTeDisplay">---</span> ngày</span>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
-                        <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
-                            <span class="text-gray-600">Lương 1 ngày:</span>
-                            <span class="font-medium"><span id="luongNgayCong">---</span> VNĐ</span>
-                        </div>
-                        <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
-                            <span class="text-gray-600">Lương 1 giờ (thường):</span>
-                            <span class="font-medium"><span id="luongGioBT">---</span> VNĐ</span>
-                        </div>
-                        <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
-                            <span class="text-gray-600">Lương 1 giờ (tăng ca x1.5):</span>
-                            <span class="font-medium"><span id="luongGioTC">---</span> VNĐ</span>
-                        </div>
-                        <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
-                            <span class="text-gray-600">Trừ 1 giờ nghỉ:</span>
-                            <span class="font-medium"><span id="luongGioNghi">---</span> VNĐ</span>
-                        </div>
-                    </div>
-
-                    <div class="border-t border-gray-200 pt-3 mt-3 space-y-3">
-                        <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
-                            <span class="text-gray-600">Tổng lương theo ngày công:</span>
-                            <span class="font-medium"><span id="tongLuongTheoCong">---</span> VNĐ</span>
-                        </div>
-                        <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
-                            <span class="text-gray-600">Tổng tiền tăng ca:</span>
-                            <span class="font-medium text-green-600"><span id="tongTienTangCa">---</span> VNĐ</span>
-                        </div>
-                        <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
-                            <span class="text-gray-600">Tổng tiền trừ giờ nghỉ:</span>
-                            <span class="font-medium text-red-600">(<span id="tongTienNghi">---</span> VNĐ)</span>
-                        </div>
-                         <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
-                            <span class="text-gray-600">Tiền thưởng:</span>
-                            <span class="font-medium text-pink-600"><span id="tienThuongDisplay">---</span> VNĐ</span>
-                        </div>
-                         <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg">
-                            <span class="text-gray-600">Tổng thu nhập (trước ứng):</span>
-                            <span class="font-bold"><span id="tongThuNhap">---</span> VNĐ</span>
-                        </div>
-                        <div class="result-item flex justify-between items-center px-3 py-2 rounded-lg bg-red-50">
-                            <span class="text-red-600">Tiền tạm ứng:</span>
-                            <span class="font-medium text-red-700">(<span id="tamUngDisplay">---</span> VNĐ)</span>
-                        </div>
-                    </div>
-
-                    <div class="final-salary flex justify-between items-center px-4 py-3 rounded-lg mt-4">
-                        <span class="font-bold text-gray-800 text-lg">LƯƠNG THỰC NHẬN:</span>
-                        <span class="text-xl font-bold text-blue-700"><span id="luongThucNhan">---</span> VNĐ</span>
-                    </div>
-                </div>
-            </div>
+  <header class="min-h-[92vh] flex flex-col justify-center items-center text-center px-6 pt-24 relative">
+    <div class="max-w-5xl mx-auto">
+      <p class="text-[11px] uppercase tracking-[0.35em] text-neutral-500 mb-6">Cô Mập - 2026</p>
+      <h1 class="font-serif text-[18vw] md:text-[14vw] lg:text-[160px] leading-[0.78]">
+        Khám Phá
+      </h1>
+      <div class="mt-12 md:mt-16">
+        <div class="inline-block border-t border-neutral-900/15 pt-8">
+          <p class="text-[15px] md:text-[17px] text-neutral-700 max-w-xl mx-auto leading-relaxed">
+            Dựa trên size bạn chọn, chúng tôi sẽ gợi ý những mã hiện còn hàng.
+          </p>
+          <div class="hero-sizes mt-8 flex flex-wrap justify-center gap-3">
+            <button data-size="M" class="size-hero w-14 h-14 rounded-full border border-neutral-900/20 hover:border-neutral-900 text-[14px] font-light transition-all duration-300 hover:bg-neutral-900 hover:text-[#FAF7F2]">M</button>
+            <button data-size="L" class="size-hero w-14 h-14 rounded-full border border-neutral-900/20 hover:border-neutral-900 text-[14px] font-light transition-all duration-300 hover:bg-neutral-900 hover:text-[#FAF7F2]">L</button>
+            <button data-size="XL" class="size-hero w-14 h-14 rounded-full border border-neutral-900/20 hover:border-neutral-900 text-[14px] font-light transition-all duration-300 hover:bg-neutral-900 hover:text-[#FAF7F2]">XL</button>
+            <button data-size="XXL" class="size-hero w-14 h-14 rounded-full border border-neutral-900/20 hover:border-neutral-900 text-[14px] font-light transition-all duration-300 hover:bg-neutral-900 hover:text-[#FAF7F2]">XXL</button>
+            <button data-size="3XL" class="size-hero w-14 h-14 rounded-full border border-neutral-900/20 hover:border-neutral-900 text-[14px] font-light transition-all duration-300 hover:bg-neutral-900 hover:text-[#FAF7F2]">3XL</button>
+          </div>
         </div>
+      </div>
     </div>
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-neutral-400">
+      <span class="text-[10px] uppercase tracking-widest">Kéo xuống</span>
+      <div class="w-[1px] h-8 bg-neutral-300 animate-pulse"></div>
+    </div>
+  </header>
 
-    <script>
-        let ngayCongChuanThangTruoc = 0;
-        let thangTinhLuong = '';
-        let namTinhLuong = '';
+  <section id="lookbook" class="px-6 lg:px-12 py-16 lg:py-24 border-t border-neutral-900/10">
+    <div class="max-w-[1400px] mx-auto">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 lg:mb-20">
+        <div>
+          <h2 class="font-serif text-5xl md:text-6xl lg:text-7xl leading-none">Lookbook</h2>
+          <p id="filter-info" class="mt-4 text-[13px] text-neutral-500 tracking-wide min-h-[20px]"></p>
+        </div>
+        <div id="size-pills" class="flex gap-2"></div>
+      </div>
 
-        // --- Custom Alert Functions ---
-        function showCustomAlert(message) {
-            document.getElementById('customAlertMessage').textContent = message;
-            document.getElementById('customAlert').style.display = 'block';
-            // Auto close after 5 seconds
-            setTimeout(closeCustomAlert, 5000);
-        }
+      <div id="initial-state" class="text-center py-24 border border-dashed border-neutral-300 rounded-[2px]">
+        <p class="font-serif text-3xl md:text-4xl text-neutral-800">Chọn size của bạn ở trên</p>
+        <p class="mt-3 text-[14px] text-neutral-500">Bộ sưu tập sẽ được lọc theo size còn hàng tại showroom</p>
+      </div>
 
-        function closeCustomAlert() {
-            document.getElementById('customAlert').style.display = 'none';
-        }
-        // --- End Custom Alert Functions ---
+      <div id="gallery" class="grid grid-cols-1 md:grid-cols-2 gap-x-10 md:gap-x-16 lg:gap-x-24 gap-y-16 md:gap-y-24 items-start"></div>
+    </div>
+  </section>
 
+  <div id="lightbox" class="fixed inset-0 z-[100] hidden">
+    <div id="lightbox-backdrop" class="absolute inset-0 bg-[#FAF7F2]/95 backdrop-blur-2xl"></div>
+    <button id="close-lb" class="fixed top-6 right-6 lg:top-8 lg:right-10 w-10 h-10 flex items-center justify-center rounded-full border border-neutral-900/20 hover:bg-neutral-900 hover:text-[#FAF7F2] transition z-50">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
 
-        // Hàm tính ngày công chuẩn của tháng trước (Thứ 2 - Thứ 7)
-        function tinhNgayCongChuanThangTruoc() {
-            const homNay = new Date();
-            // Tính toán cho tháng trước
-            const ngayDauThangTruoc = new Date(homNay.getFullYear(), homNay.getMonth() - 1, 1);
-            namTinhLuong = ngayDauThangTruoc.getFullYear();
-            thangTinhLuong = ngayDauThangTruoc.getMonth() + 1; // getMonth() trả về 0-11
-            const ngayCuoiThangTruoc = new Date(namTinhLuong, thangTinhLuong, 0); // Ngày 0 của tháng hiện tại là ngày cuối tháng trước
-            const soNgayTrongThang = ngayCuoiThangTruoc.getDate();
+    <div class="relative h-full overflow-y-auto">
+      <div class="max-w-[1200px] mx-auto px-6 lg:px-8 py-16 lg:py-24">
+        <div class="grid lg:grid-cols-[1.15fr_0.85fr] gap-12 lg:gap-24 items-start">
+          <div>
+            <div class="aspect-[4/5] bg-neutral-100 overflow-hidden">
+              <img id="lb-main" class="w-full h-full object-contain" alt="">
+            </div>
+            <div id="lb-thumbs" class="grid grid-cols-3 gap-3 mt-3"></div>
+          </div>
+          <div class="lg:sticky lg:top-24">
+            <p id="lb-code" class="text-[11px] tracking-[0.25em] uppercase text-neutral-500"></p>
+            <h3 id="lb-name" class="font-serif text-[40px] lg:text-[48px] leading-[1.1] mt-2"></h3>
+            <p id="lb-price" class="text-[22px] font-light mt-4 tracking-wide"></p>
 
-            let soNgayCongChuan = 0;
-            for (let ngay = 1; ngay <= soNgayTrongThang; ngay++) {
-                const ngayKiemTra = new Date(namTinhLuong, thangTinhLuong - 1, ngay); // Tháng trong Date object là 0-11
-                const thuTrongTuan = ngayKiemTra.getDay(); // 0 = Chủ Nhật, 1 = Thứ 2, ..., 6 = Thứ 7
-                // Chỉ tính ngày làm việc từ Thứ 2 đến Thứ 7
-                if (thuTrongTuan >= 1 && thuTrongTuan <= 6) {
-                    soNgayCongChuan++;
-                }
-            }
-            return soNgayCongChuan;
-        }
+            <div class="h-px bg-neutral-900/10 my-8"></div>
 
-        // Hàm định dạng tiền tệ VNĐ
-        function formatCurrency(number) {
-            if (isNaN(number) || number === null || number === undefined) return '---';
-            // Làm tròn đến đơn vị gần nhất trước khi định dạng
-            return new Intl.NumberFormat('vi-VN').format(Math.round(number));
-        }
+            <div class="space-y-6">
+              <div>
+                <h4 class="text-[11px] uppercase tracking-[0.2em] text-neutral-500 mb-3">Chất liệu</h4>
+                <p id="lb-material" class="text-[15px] leading-relaxed text-neutral-800"></p>
+              </div>
+              <div>
+                <h4 class="text-[11px] uppercase tracking-[0.2em] text-neutral-500 mb-3">Mô tả</h4>
+                <p id="lb-desc" class="text-[15px] leading-relaxed text-neutral-700"></p>
+              </div>
+              <div>
+                <h4 class="text-[11px] uppercase tracking-[0.2em] text-neutral-500 mb-3">Size còn</h4>
+                <div id="lb-sizes" class="flex gap-2"></div>
+              </div>
+            </div>
 
-        // Hàm làm tròn LÊN đến hàng nghìn gần nhất
-        function roundUpToThousand(number) {
-             if (isNaN(number) || number === null || number === undefined) return 0;
-             // Chỉ làm tròn lên nếu số dương, giữ nguyên số âm
-             return number > 0 ? Math.ceil(number / 1000) * 1000 : Math.floor(number / 1000) * 1000;
-        }
+            <div class="mt-10 space-y-3">
+              <a href="https://instagram.com" target="_blank" class="group relative flex items-center justify-center w-full bg-neutral-900 text-[#FAF7F2] py-4 px-6 overflow-hidden transition">
+                <span class="relative z-10 text-[12px] uppercase tracking-[0.2em]">Liên hệ đặt</span>
+                <div class="absolute inset-0 bg-black translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+              </a>
+              <p class="text-[12px] text-neutral-500 text-center leading-relaxed">Sản phẩm made-to-order. Vui lòng nhắn Instagram hoặc ghé showroom để thử size.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <footer class="border-t border-neutral-900/10 px-6 lg:px-12 py-14 mt-12">
+    <div class="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between gap-10">
+      <div>
+        <div class="font-serif text-3xl">Cô Mập Fashion</div>
+        <div class="mt-4 space-y-1.5 text-[14px] text-neutral-600">
+          <p>Showroom: 42 Nguyễn Thiện Thuật, Phường 2, Quận 3, TP.HCM</p>
+          <p>Mở cửa: 10:00 - 20:00 (Thứ 2 - Chủ Nhật)</p>
+          <p>Hotline: 0909 123 456</p>
+        </div>
+      </div>
+      <div class="md:text-right">
+        <p class="text-[11px] uppercase tracking-widest text-neutral-500 mb-3">Theo dõi</p>
+        <a href="https://instagram.com" target="_blank" class="text-[15px] hover:underline underline-offset-4">@atelier.saigon</a>
+        <p class="mt-6 text-[12px] text-neutral-500 max-w-xs md:ml-auto">Lookbook Bộ Sưu Tập 2026 - thiết kế tối giản, may đo tỉ mỉ.</p>
+      </div>
+    </div>
+    <div class="max-w-[1400px] mx-auto mt-12 pt-6 border-t border-neutral-900/5 flex justify-between text-[11px] text-neutral-400">
+      <span>© 2026 Cô Mập Fashion</span>
+      <span>Không bán online - chỉ tư vấn trực tiếp</span>
+    </div>
+  </footer>
 
-        // Khởi tạo khi tải trang
-        window.onload = function() {
-            ngayCongChuanThangTruoc = tinhNgayCongChuanThangTruoc();
-            document.getElementById('kyTinhLuong').textContent = `${String(thangTinhLuong).padStart(2, '0')}/${namTinhLuong}`;
-            document.getElementById('ngayCongChuan').textContent = ngayCongChuanThangTruoc;
-            resetResults(); // Reset kết quả khi tải trang
-            // Không reset input khi tải trang để giữ giá trị mặc định
-        };
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  let products = [];
+  let selectedSize = null;
+  const gallery = document.getElementById('gallery');
+  const filterInfo = document.getElementById('filter-info');
+  const initialState = document.getElementById('initial-state');
+  const sizePills = document.getElementById('size-pills');
 
-        // Hàm reset các ô nhập liệu về giá trị mặc định '0' (trừ lương cơ bản)
-        function resetInputs() {
-            // Không reset lương cơ bản để người dùng có thể tính cho nhiều người cùng mức lương
-            // document.getElementById('luongCoBan').selectedIndex = 0;
-            document.getElementById('soNgayNghi').value = '0'; // Cập nhật
-            document.getElementById('soGioNghi').value = '0'; // Cập nhật
-            document.getElementById('gioTangCa').value = '0';
-            document.getElementById('tamUng').value = '0';
-            document.getElementById('tienThuong').value = '0';
-        }
+  function normalizeSize(size) {
+    return size === 'XXXL' ? '3XL' : size;
+  }
 
-        // Hàm xóa số 0 khi focus vào input
-        function clearIfZero(element) {
-            if (element.value === '0') {
-                element.value = '';
-            }
-        }
+  function extractProducts(payload) {
+    if (Array.isArray(payload)) {
+      if (Array.isArray(payload[0]?.data)) return payload[0].data;
+      return payload;
+    }
 
-        // Hàm đặt lại số 0 nếu input rỗng hoặc không hợp lệ khi mất focus
-        function setDefaultIfEmpty(element) {
-            // Chuyển đổi giá trị thành số để kiểm tra
-            const valueAsNumber = parseFloat(element.value);
+    if (payload && Array.isArray(payload.data)) return payload.data;
+    return [];
+  }
 
-            // Nếu rỗng, không phải số, hoặc là số âm, đặt lại thành '0'
-            if (element.value === '' || isNaN(valueAsNumber) || valueAsNumber < 0) {
-                 if (valueAsNumber < 0) {
-                     showCustomAlert("Giá trị không được là số âm. Đã tự động đặt lại thành 0.");
-                 }
-                 element.value = '0';
-            }
-        }
+  function getEditorialLayout(index) {
+    const layouts = [
+      { ratio: 'aspect-[4/5]', offset: '' },
+      { ratio: 'aspect-[3/4]', offset: 'md:mt-24' },
+      { ratio: 'aspect-[5/4]', offset: 'md:mt-10' },
+      { ratio: 'aspect-[4/5]', offset: 'md:-mt-12' },
+      { ratio: 'aspect-[3/4]', offset: '' },
+      { ratio: 'aspect-[5/6]', offset: 'md:mt-20' }
+    ];
 
-        // Hàm tính lương chính
-        function tinhLuong() {
-            // Lấy giá trị từ các input và select
-            const luongCoBan = parseFloat(document.getElementById('luongCoBan').value) || 0;
-            const soNgayNghi = parseFloat(document.getElementById('soNgayNghi').value) || 0;
-            const gioTangCa = parseFloat(document.getElementById('gioTangCa').value) || 0;
-            const tamUngInput = parseFloat(document.getElementById('tamUng').value) || 0;
-            const tienThuongInput = parseFloat(document.getElementById('tienThuong').value) || 0;
-            const soGioNghi = parseFloat(document.getElementById('soGioNghi').value) || 0;
+    return layouts[index % layouts.length];
+  }
 
-            const tamUng = tamUngInput * 1000; // Chuyển về đơn vị đồng
-            const tienThuong = tienThuongInput * 1000; // Chuyển về đơn vị đồng
+  function handleSizeSelect(size) {
+    selectedSize = size;
+    updateHeroButtons(size);
+    renderPills(size);
+    initialState.classList.add('hidden');
+    gallery.innerHTML = '<div class="text-center py-24 md:col-span-2"><div class="inline-block w-8 h-8 border-2 border-neutral-300 border-t-neutral-900 rounded-full animate-spin"></div><p class="mt-4 text-neutral-500">Đang tải sản phẩm...</p></div>';
 
-            // --- Kiểm tra đầu vào ---
-            if (luongCoBan <= 0) {
-                showCustomAlert("Vui lòng chọn Lương cơ bản hợp lệ.");
-                resetResults();
-                return;
-            }
-            if (ngayCongChuanThangTruoc <= 0) {
-                showCustomAlert("Không thể xác định ngày công chuẩn. Vui lòng kiểm tra lại.");
-                resetResults();
-                return;
-            }
-             // Kiểm tra giá trị âm (đã được xử lý trong onblur, nhưng kiểm tra lại cho chắc)
-            if (soNgayNghi < 0 || gioTangCa < 0 || tamUngInput < 0 || soGioNghi < 0 || tienThuongInput < 0) {
-                 showCustomAlert("Các giá trị nhập vào không được là số âm.");
-                 resetResults();
-                 // Đặt lại các giá trị âm về 0 trong giao diện
-                 if (soNgayNghi < 0) document.getElementById('soNgayNghi').value = '0';
-                 if (gioTangCa < 0) document.getElementById('gioTangCa').value = '0';
-                 if (tamUngInput < 0) document.getElementById('tamUng').value = '0';
-                 if (soGioNghi < 0) document.getElementById('soGioNghi').value = '0';
-                 if (tienThuongInput < 0) document.getElementById('tienThuong').value = '0';
-                 return;
-             }
+    const webhookSize = size === '3XL' ? 'XXXL' : size;
+    fetch('https://vmi3164630.contaboserver.net/webhook/get_product_info', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ size: webhookSize })
+    })
+    .then(res => res.json())
+    .then(data => {
+      const productData = extractProducts(data);
 
-            // Tính tổng số ngày công bị trừ (bao gồm ngày nghỉ nguyên và giờ nghỉ lẻ quy đổi)
-            // Giả sử 1 ngày làm 9 tiếng
-            const ngayCongTuGioNghi = soGioNghi / 9;
-            const tongNgayCongTru = soNgayNghi + ngayCongTuGioNghi;
+      products = productData.map((item, idx) => ({
+        id: idx + 1,
+        code: item['Mã sản phẩm'] || '',
+        name: item['Mã sản phẩm'] || 'Sản phẩm',
+        price: typeof item['giá sp'] === 'number' ? item['giá sp'].toLocaleString('vi-VN') + 'đ' : '',
+        sizes: Array.isArray(item['size còn']) ? item['size còn'].map(normalizeSize) : [],
+        material: item['chất liệu'] || '',
+        description: item['đặc điểm'] || '',
+        images: item['link ảnh'] ? [item['link ảnh']] : [],
+        layout: getEditorialLayout(idx)
+      })).filter(product => product.images.length && product.sizes.length);
 
-            if (tongNgayCongTru > ngayCongChuanThangTruoc) {
-                showCustomAlert(`Tổng số ngày công bị trừ (${tongNgayCongTru.toFixed(2)}) không thể lớn hơn số ngày công chuẩn (${ngayCongChuanThangTruoc}) của tháng.`);
-                resetResults();
-                return;
-            }
+      renderGallery();
+    })
+    .catch(err => {
+      console.error('Webhook error:', err);
+      products = [];
+      filterInfo.textContent = '';
+      gallery.innerHTML = '<div class="text-center py-24 md:col-span-2"><p class="text-neutral-500">Không thể tải sản phẩm. Vui lòng thử lại.</p></div>';
+    });
 
+    setTimeout(() => {
+      document.getElementById('lookbook').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
 
-            // --- Tính toán chi tiết ---
-            // Ngày công thực tế = Ngày công chuẩn - Số ngày nghỉ nguyên
-            const ngayCongThucTe = ngayCongChuanThangTruoc - soNgayNghi;
-            const luongNgayCong = luongCoBan / ngayCongChuanThangTruoc;
-            const luongGioBT = luongNgayCong / 9; // Lương 1 giờ bình thường
-            const luongGioTC = luongGioBT * 1.5; // Lương 1 giờ tăng ca
-            const luongGioNghi = luongGioBT; // Tiền trừ cho 1 giờ nghỉ (bằng lương 1 giờ BT)
+  function updateHeroButtons(size) {
+    document.querySelectorAll('.size-hero').forEach(btn => {
+      const isActive = btn.dataset.size === size;
+      btn.classList.toggle('bg-neutral-900', isActive);
+      btn.classList.toggle('text-[#FAF7F2]', isActive);
+      btn.classList.toggle('border-neutral-900', isActive);
+    });
+  }
 
-            // Tính các khoản thu nhập và khấu trừ
-            const tongLuongTheoCong = luongNgayCong * ngayCongThucTe; // Lương dựa trên số ngày đi làm thực tế (đã trừ ngày nghỉ nguyên)
-            const tongTienTangCa = gioTangCa * luongGioTC;
-            const tongTienTruGioNghi = soGioNghi * luongGioNghi; // Tổng tiền bị trừ do nghỉ giờ lẻ
+  function renderPills(size) {
+    sizePills.innerHTML = '';
+    ['M', 'L', 'XL', 'XXL', '3XL'].forEach(s => {
+      const b = document.createElement('button');
+      b.textContent = s;
+      b.dataset.size = s;
+      b.className = `w-9 h-9 rounded-full border text-[12px] transition ${s === size ? 'bg-neutral-900 text-[#FAF7F2] border-neutral-900' : 'border-neutral-300 text-neutral-600 hover:border-neutral-900'}`;
+      b.onclick = () => handleSizeSelect(s);
+      sizePills.appendChild(b);
+    });
+  }
 
-            // Tổng thu nhập = Lương theo ngày công + Tiền tăng ca + Tiền thưởng - Tiền trừ giờ nghỉ lẻ
-            const tongThuNhap = tongLuongTheoCong + tongTienTangCa + tienThuong - tongTienTruGioNghi;
-            const luongThucNhanChuaLamTron = tongThuNhap - tamUng;
+  function renderGallery() {
+    gallery.innerHTML = '';
+    const filtered = products.filter(p => p.sizes.includes(selectedSize));
+    filterInfo.textContent = `Đã chọn size ${selectedSize} • ${filtered.length} thiết kế còn hàng`;
 
-            // Làm tròn lương thực nhận LÊN đến hàng nghìn gần nhất
-            const luongThucNhan = roundUpToThousand(luongThucNhanChuaLamTron);
+    if (!filtered.length) {
+      gallery.innerHTML = '<div class="text-center py-24 md:col-span-2"><p class="text-neutral-500">Không có sản phẩm phù hợp với size đã chọn.</p></div>';
+      return;
+    }
 
-            // --- Hiển thị kết quả ---
-            document.getElementById('ngayCongThucTeDisplay').textContent = ngayCongThucTe.toFixed(1);
-            document.getElementById('luongNgayCong').textContent = formatCurrency(luongNgayCong);
-            document.getElementById('luongGioBT').textContent = formatCurrency(luongGioBT);
-            document.getElementById('luongGioTC').textContent = formatCurrency(luongGioTC);
-            document.getElementById('luongGioNghi').textContent = formatCurrency(luongGioNghi);
-            document.getElementById('tongLuongTheoCong').textContent = formatCurrency(tongLuongTheoCong);
-            document.getElementById('tongTienTangCa').textContent = formatCurrency(tongTienTangCa);
-            document.getElementById('tongTienNghi').textContent = formatCurrency(tongTienTruGioNghi);
-            document.getElementById('tienThuongDisplay').textContent = formatCurrency(tienThuong);
-            document.getElementById('tongThuNhap').textContent = formatCurrency(tongThuNhap);
-            document.getElementById('tamUngDisplay').textContent = formatCurrency(tamUng);
-            document.getElementById('luongThucNhan').textContent = formatCurrency(luongThucNhan);
+    filtered.forEach((p, i) => {
+      const layout = p.layout || getEditorialLayout(i);
+      const card = document.createElement('div');
+      card.className = `group cursor-pointer ${layout.offset}`;
+      card.innerHTML = `
+        <div class="relative overflow-hidden bg-neutral-100 ${layout.ratio}">
+          <img src="${p.images[0]}" alt="${p.name}" loading="lazy" class="w-full h-full object-contain">
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-t from-black/80 via-black/25 to-transparent"></div>
+          <div class="absolute inset-0 p-7 lg:p-9 flex flex-col justify-end opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-out">
+            <div class="text-[#FAF7F2]">
+              <div class="flex items-end justify-between gap-4">
+                <div>
+                  <p class="text-[10px] tracking-[0.28em] uppercase opacity-70 mb-2">${p.code}</p>
+                  <h3 class="font-serif text-[28px] md:text-[32px] leading-[1.1]">${p.name}</h3>
+                </div>
+                <p class="text-[13px] tracking-wide font-light whitespace-nowrap mb-1 opacity-90">${p.price}</p>
+              </div>
+              <div class="mt-6 flex items-center justify-between gap-4">
+                <div class="flex gap-1.5 flex-wrap">
+                  ${p.sizes.map(s => `<span class="w-[26px] h-[26px] rounded-full border text-[10px] flex items-center justify-center backdrop-blur-sm transition ${s === selectedSize ? 'bg-[#FAF7F2] text-black border-[#FAF7F2] font-medium' : 'border-white/40 text-white/85'}">${s}</span>`).join('')}
+                </div>
+                <span class="text-[10px] uppercase tracking-[0.22em] border-b border-white/60 pb-1 group-hover:border-white transition whitespace-nowrap">Xem chi tiết</span>
+              </div>
+            </div>
+          </div>
+          <div class="md:hidden absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
+            <p class="text-white text-[12px]"><span class="opacity-70">${p.code}</span> · ${p.name}</p>
+          </div>
+        </div>
+      `;
+      card.addEventListener('click', () => openLightbox(p));
+      gallery.appendChild(card);
+    });
+  }
 
-            // Gọi hàm reset input sau khi hiển thị kết quả thành công
-            resetInputs(); // Đã bỏ comment dòng này
-        }
+  const lightbox = document.getElementById('lightbox');
+  const lbMain = document.getElementById('lb-main');
+  const lbThumbs = document.getElementById('lb-thumbs');
 
-        // Hàm đặt lại tất cả các ô kết quả về '---'
-        function resetResults() {
-            document.getElementById('ngayCongThucTeDisplay').textContent = '---';
-            document.getElementById('luongNgayCong').textContent = '---';
-            document.getElementById('luongGioBT').textContent = '---';
-            document.getElementById('luongGioTC').textContent = '---';
-            document.getElementById('luongGioNghi').textContent = '---';
-            document.getElementById('tongLuongTheoCong').textContent = '---';
-            document.getElementById('tongTienTangCa').textContent = '---';
-            document.getElementById('tongTienNghi').textContent = '---';
-            document.getElementById('tienThuongDisplay').textContent = '---';
-            document.getElementById('tongThuNhap').textContent = '---';
-            document.getElementById('tamUngDisplay').textContent = '---';
-            document.getElementById('luongThucNhan').textContent = '---';
-        }
-    </script>
+  function openLightbox(p) {
+    lightbox.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('lb-code').textContent = p.code;
+    document.getElementById('lb-name').textContent = p.name;
+    document.getElementById('lb-price').textContent = p.price;
+    document.getElementById('lb-material').textContent = p.material || 'Đang cập nhật';
+    document.getElementById('lb-desc').textContent = p.description || 'Đang cập nhật';
+
+    lbMain.src = p.images[0];
+    lbMain.alt = p.name;
+
+    lbThumbs.innerHTML = '';
+    p.images.forEach(src => {
+      const btn = document.createElement('button');
+      btn.className = 'aspect-[4/5] overflow-hidden bg-neutral-100 relative group';
+      btn.innerHTML = `<img src="${src}" class="w-full h-full object-contain"><div class="absolute inset-0 ring-1 ring-inset ring-black/10 group-hover:ring-black/30 transition"></div>`;
+      btn.onclick = () => { lbMain.src = src; };
+      lbThumbs.appendChild(btn);
+    });
+
+    const sizeWrap = document.getElementById('lb-sizes');
+    sizeWrap.innerHTML = '';
+    p.sizes.forEach(s => {
+      const span = document.createElement('span');
+      span.className = `w-10 h-10 rounded-full border text-[13px] flex items-center justify-center transition ${s === selectedSize ? 'bg-neutral-900 text-[#FAF7F2] border-neutral-900' : 'border-neutral-300 text-neutral-700'}`;
+      span.textContent = s;
+      sizeWrap.appendChild(span);
+    });
+  }
+
+  function closeLightbox() {
+    lightbox.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.size-hero').forEach(btn => {
+    btn.addEventListener('click', () => handleSizeSelect(btn.dataset.size));
+  });
+
+  document.getElementById('close-lb').addEventListener('click', closeLightbox);
+  document.getElementById('lightbox-backdrop').addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && !lightbox.classList.contains('hidden')) closeLightbox();
+  });
+});
+</script>
 </body>
 </html>
